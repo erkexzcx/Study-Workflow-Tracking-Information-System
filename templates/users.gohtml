@@ -1,0 +1,639 @@
+<section class="content-header">
+    <h1>Users</h1>
+    <ol class="breadcrumb">
+        <li><i class="fa fa-home"></i> Home</a></li>
+        <li><i class="fa fa-users"></i> Users</li>
+    </ol>
+</section>
+
+<section class="content container-fluid">
+    <!----------------- Visible content  ----------------->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
+                    <table id="users_table" class="table table-bordered table-hover nowrap table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Name</th>
+                                <th>Surname</th>
+                                <th>Email</th>
+                                <th>Full access</th>
+                                {{if .admin}}<th>Actions</th>{{end}}
+                        </thead>
+                        <tbody>
+                            {{range .users}}
+
+                            <tr>
+                                <td>
+                                    {{if eq .ID $.sessionUserID}}
+                                    <b>{{.Username}}</b>
+                                    {{else}}
+                                    {{.Username}}
+                                    {{end}}
+                                </td>
+                                <td>{{.Name}}</td>
+                                <td>{{.Surname}}</td>
+                                <td>{{.Email}}</td>
+                                <td>{{if eq .Admin true}}<b>Yes</b>{{else}}No{{end}}</td>
+                                {{if $.admin}}
+                                <td>
+                                    <button type="button" class="btn btn-xs btn-default btn-flat edit-btn"
+                                        item-id="{{.ID}}">Edit
+                                    </button>
+                                    <button type="button"
+                                        class="btn btn-xs btn-danger btn-flat delete-btn {{if eq .ID $.sessionUserID}} disabled{{end}}"
+                                        item-id="{{.ID}}"
+                                        title="{{if eq .ID $.sessionUserID}} You cannot delete yourself{{end}}">Delete
+                                    </button>
+                                </td>
+                                {{end}}
+                            </tr>
+
+                            {{end}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!----------------- End of Visible content ----------------->
+
+{{if .admin}}
+
+    <!----------------- New user modal ----------------->
+    <form action="/users" method="post" id="new-form" autocomplete="off">
+        <!-- Hide annoying chrome autocomplete -->
+        <input style="display:none">
+        <input type="password" style="display:none">
+        <!-- /Hide annoying chrome autocomplete -->
+        <div class="modal" id="new-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Create new user</h4>
+                    </div>
+
+                    <div class="modal-body loaded">
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        placeholder="Enter name...">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="surname">Surname</label>
+                                    <input type="text" class="form-control" id="surname" name="surname"
+                                        placeholder="Enter surname...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="text" class="form-control" id="email" name="email"
+                                        placeholder="Enter email...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username"
+                                        placeholder="Enter username...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="Enter password...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="checkbox icheck">
+                                    <label>
+                                        <input type="checkbox" name="admin" value="1"> Full access
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="Submit" class="btn btn-primary">Create</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+    <!----------------- End of New user modal ----------------->
+
+    <!----------------- Edit modal ----------------->
+    <form action="" method="put" id="edit-form" autocomplete="off">
+        <!-- Hide annoying chrome autocomplete -->
+        <input style="display:none">
+        <input type="password" style="display:none">
+        <!-- /Hide annoying chrome autocomplete -->
+        <div class="modal" id="edit-modal">
+            <div class="modal-dialog">
+                <div class="modal-content ajax-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+
+                    <div class="modal-body loaded">
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                        placeholder="Enter name...">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="surname">Surname</label>
+                                    <input type="text" class="form-control" id="surname" name="surname"
+                                        placeholder="Enter surname...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="text" class="form-control" id="email" name="email"
+                                        placeholder="Enter email...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" class="form-control" id="username" name="username"
+                                        placeholder="Enter username...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="Leave empty for old password or enter new password...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="checkbox icheck">
+                                    <label>
+                                        <input type="checkbox" name="admin" value="1"> Full access
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <small>
+                                    Created by: <b><font id="created_by"></font></b><BR>
+                                    Created on: <b><font id="created_on"></font></b><BR>
+                                </small>
+                            </div>
+                            <div class="col-md-6">
+                                <small>
+                                    Updated by: <b><font id="updated_by"></font></b><BR>
+                                    Updated on: <b><font id="updated_on"></font></b><BR>
+                                </small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="Submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+    <!----------------- End of Edit modal ----------------->
+
+    <!----------------- Delete modal ----------------->
+    <form action="" method="delete" id="delete-form">
+        <div class="modal modal-danger" id="delete-modal">
+            <div class="modal-dialog">
+                <div class="modal-content ajax-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Confirmation required</h4>
+                    </div>
+
+                    <div class="modal-body loaded" style="display: none"></div>
+
+                    <div class="modal-footer">
+                        <button type="Submit" class="btn btn-primary">Delete</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+    <!----------------- End of Delete modal ----------------->
+
+{{end}}
+
+</section>
+
+<script>
+
+    /************* 'Datatables' function *************/
+    var table = $('#users_table').DataTable({
+        // Make it really responsive, so you don't have to reboot when resizing page:
+        autoWidth: false,
+        // Make it responsive (mobile-friendly):
+        responsive: {
+            details: {
+                display: $.fn.dataTable.Responsive.display.childRowImmediate,
+                type: ''
+            }
+        },
+        // Disable pages, (this will display all data at once):
+        paging: false,
+        // Disable initial sort (it's done by database query anyway):
+        sorting: [],
+        // Disable "Showing 1 of..." type of message under table, because of 1 page only:
+        info: false,
+        // DOM ordering settings for DataTables + classes:
+        dom: '<"pull-left hidden-xs"B><"visible-xs text-center"B><"pull-right hidden-xs"f><"visible-xs-block"f>ltip',
+        // Add export buttons to dataTable (DataTables way).
+        // see https://datatables.net/extensions/buttons/examples/initialisation/export :
+        columnDefs: [
+            {{if .admin}}
+            {
+                // Disable sorting on last column:
+                "targets": [-1],
+                "sortable": false
+            },
+            {{end}}
+            {
+                responsivePriority: 1,
+                targets: 0
+            },
+            {
+                responsivePriority: 2,
+                targets: -1
+            }
+        ],
+        buttons: [
+            {{if .admin}}
+            {
+                text: '<i class="fa fa-plus"> New</i>',
+                className: 'btn btn-default btn-sm btn-flat',
+                action: function (e, dt, node, config) {
+                    newUser();
+                }
+            },
+            {{end}}
+            {
+                extend: 'copy', /* https://datatables.net/reference/button/copy */
+                className: 'btn btn-default btn-sm btn-flat',
+                text: '<i class="fa fa-copy"> Copy</i>',
+                exportOptions: {
+                    // Avoid 6th column (actions):
+                    {{if .admin}}columns: ':not(:last-child)',{{end}}
+                    // Export original data (for example, truncated URLs will not be truncated):
+                    orthogonal: 'export'
+                }
+            },
+            {
+                extend: 'csv', /* https://datatables.net/reference/button/csv */
+                className: 'btn btn-default btn-sm btn-flat',
+                text: '<i class="fa fa-download"> CSV</i>',
+                filename: 'Users',
+                exportOptions: {
+                    // Avoid 6th column (actions):
+                    {{if .admin}}columns: ':not(:last-child)',{{end}}
+                    // Export original data (for example, truncated URLs will not be truncated):
+                    orthogonal: 'export'
+                }
+            },
+            {
+                extend: 'print', /* https://datatables.net/reference/button/print */
+                className: 'btn btn-default btn-sm btn-flat',
+                text: '<i class="fa fa-print"> Print</i>',
+                exportOptions: {
+                    // Avoid 6th column (actions):
+                    {{if .admin}}columns: ':not(:last-child)'{{end}}
+                },
+                customize: function (win) {
+                    // Some styling:
+                    $(win.document.body).css('font-size', '10pt');
+                    $(win.document.body).find('table')
+                            .addClass('compact')
+                            .css('font-size', 'inherit');
+                }
+            }
+        ]
+    });
+
+    {{if .admin}}
+    function newUser() {
+        /******** NOTE: This function is called from DataTables! ********/
+
+        // Define modal:
+        var modal = $('#new-modal');
+
+        // Define editable (by user) modal form elements:
+        var input_name = modal.find('#name');
+        var input_surname = modal.find('#surname');
+        var input_email = modal.find('#email');
+        var input_username = modal.find('#username');
+        var input_password = modal.find('#password');
+        var input_admin = modal.find('[name="admin"]');
+
+        /* If user typed anything, closed modal and reopened, the same
+         typed data will be shown. We need to clear it if any: */
+        input_name.val('');
+        input_surname.val('');
+        input_email.val('');
+        input_username.val('');
+        input_password.val('');
+        input_admin.iCheck('uncheck');
+
+        // Display modal:
+        modal.modal({ backdrop: 'static' });
+
+        // Focus on input box:
+        input_name.focus();
+    }
+
+    /************* 'Edit' function *************/
+    table.on('click', '.edit-btn:not(.disabled)', function () {
+        // Define modal:
+        var modal = $('#edit-modal');
+
+        // Define editable (by user) modal form elements:
+        var input_name = modal.find('#name');
+        var input_surname = modal.find('#surname');
+        var input_email = modal.find('#email');
+        var input_username = modal.find('#username');
+        var input_admin = modal.find('[name="admin"]');
+        var modal_title = modal.find('.modal-title');
+        var modal_updated_by = modal.find('#updated_by');
+        var modal_updated_on = modal.find('#updated_on');
+        var modal_created_by = modal.find('#created_by');
+        var modal_created_on = modal.find('#created_on');
+
+        // Prepare modal as "loading, please wait":
+        showModalContentLoading(modal);
+        // Display modal:
+        modal.modal({ backdrop: 'static' });
+        // ID of clicked item (row):
+        id = $(this).attr('item-id');
+        modal.parent().attr('action', '/users/' + id)
+        $.ajax({
+            method: "GET",
+            url: "/users/" + id,
+            dataType: 'json',
+            success: function (data) {
+                // Fill up user editable fields:
+                input_admin.iCheck(data.admin == 1 ? 'check' : 'uncheck');
+                input_name.val(data.name);
+                input_surname.val(data.surname);
+                input_email.val(data.email);
+                input_username.val(data.username);
+
+                // Set modal title:
+                modal_title.html('Editing "<b>' + data.username + '</b>".');
+
+                // Set 'updated by' and 'created by' values:
+                modal_updated_by.html(data.updated_by);
+                modal_updated_on.html(data.updated_on);
+                modal_created_by.html(data.created_by);
+                modal_created_on.html(data.created_on);
+
+                // Show expected modal:
+                showModalContentLoaded(modal);
+
+                // Focus on title input box:
+                input_name.focus();
+            },
+            error: function (request, status, error) {
+                ajaxErrorHandler(request, status, error);
+                showModalContentFailed(modal);
+            }
+        });
+    });
+
+    /************* 'Delete' function *************/
+    table.on('click', '.delete-btn:not(.disabled)', function () {
+        // Define modal:
+        var modal = $('#delete-modal');
+
+        // Prepare modal as "loading, please wait":
+        showModalContentLoading(modal);
+        // Display modal:
+        modal.modal({ backdrop: 'static' });
+        // ID of clicked item (row):
+        id = $(this).attr('item-id');
+        modal.parent().attr('action', '/users/' + id)
+        $.ajax({
+            method: "GET",
+            url: "/users/" + id,
+            dataType: 'json',
+            success: function (data) {
+                // Set modal content:
+                modal.find('.modal-body.loaded').html('Do you really want to delete <b>' + data.name + ' ' + data.surname + '</b>?');
+
+                // Show expected modal:
+                showModalContentLoaded(modal);
+            },
+            error: function (request, status, error) {
+                ajaxErrorHandler(request, status, error);
+                showModalContentFailed(modal);
+            }
+        });
+    });
+
+    /******************** Form validator ********************/
+    $('#new-form').validate({
+        errorElement: "div",
+        errorClass: 'help-block',
+        highlight: function (element) {
+            $(element).parents().eq(0).addClass("has-error");
+        },
+        unhighlight: function (element) {
+            $(element).parents().eq(0).removeClass("has-error");
+        },
+        rules: {
+            "name": {
+                required: true,
+                maxlength: 60,
+                noSpace: true
+            },
+            "surname": {
+                required: true,
+                maxlength: 60,
+                noSpace: true
+            },
+            "username": {
+                required: true,
+                minlength: 3,
+                maxlength: 60,
+                noSpace: true
+            },
+            "password": {
+                required: true,
+                minlength: 6,
+                atLeastUppercase: true,
+                atLeastLowercase: true,
+                atLeastNumber: true
+            }
+        },
+        messages: {
+            "name": {
+                required: "You must enter the name!",
+                maxlength: "Name should be no longer than 60 characters long!",
+                noSpace: "Name cannot contain spaces!"
+            },
+            "surname": {
+                required: "You must enter the surname!",
+                maxlength: "Surname should be no longer than 60 characters long!",
+                noSpace: "Surname cannot contain spaces!"
+            },
+            "username": {
+                required: "You must enter the username!",
+                minlength: "Username should be 3 or more characters long!",
+                maxlength: "Username should be no longer than 60 characters long!",
+                noSpace: "Username cannot contain spaces!"
+            },
+            "password": {
+                required: "You must enter the password!",
+                minlength: "Password must be at least 6 characters long",
+                atLeastUppercase: "Password must contain at least one UPPERCASE letter",
+                atLeastLowercase: "Password must contain at least one lowercase letter",
+                atLeastNumber: "Password must contain at least one number"
+            }
+        },
+        submitHandler: function (form) {
+            submitAjaxForm(form, "User has been created!", function () {
+                $('[href="#users"]:first').click(); // Refresh page
+            });
+            return false; // Prevent further events, since we use ajax.
+        }
+    });
+
+    $('#edit-form').validate({
+        errorElement: "div",
+        errorClass: 'help-block',
+        highlight: function (element) {
+            $(element).parents().eq(0).addClass("has-error");
+        },
+        unhighlight: function (element) {
+            $(element).parents().eq(0).removeClass("has-error");
+        },
+        rules: {
+            "name": {
+                required: true,
+                maxlength: 60,
+                noSpace: true
+            },
+            "surname": {
+                required: true,
+                maxlength: 60,
+                noSpace: true
+            },
+            "username": {
+                required: true,
+                minlength: 3,
+                maxlength: 60,
+                noSpace: true
+            },
+            "password": {
+                nothingOrMinimum: true, /* HERE COMES THE DIFFERENCE */
+                atLeastUppercase: true,
+                atLeastLowercase: true,
+                atLeastNumber: true
+            }
+        },
+        messages: {
+            "name": {
+                required: "You must enter the name!",
+                maxlength: "Name should be no longer than 60 characters long!",
+                noSpace: "Name cannot contain spaces!"
+            },
+            "surname": {
+                required: "You must enter the surname!",
+                maxlength: "Surname should be no longer than 60 characters long!",
+                noSpace: "Surname cannot contain spaces!"
+            },
+            "username": {
+                required: "You must enter the username!",
+                minlength: "Username should be 3 or more characters long!",
+                maxlength: "Username should be no longer than 60 characters long!",
+                noSpace: "Username cannot contain spaces!"
+            },
+            "password": {
+                nothingOrMinimum: "Leave this field empty or enter password at least 6 characters long!",
+                atLeastUppercase: "Password must contain at least one UPPERCASE letter",
+                atLeastLowercase: "Password must contain at least one lowercase letter",
+                atLeastNumber: "Password must contain at least one number"
+            }
+        },
+        submitHandler: function (form) {
+            submitAjaxForm(form, "User has been updated!", function () {
+                $('[href="#users"]:first').click(); // Refresh page
+            });
+            return false; // Prevent further events, since we use ajax.
+        }
+    });
+
+    // Ajax submit delete form:
+    $("#delete-form").submit(function (e) {
+        submitAjaxForm(this, "User has been deleted!", function () {
+            $('[href="#users"]:first').click(); // Refresh page
+        });
+        return false; // Prevent further events, since we use ajax.
+    });
+
+    {{end}}
+
+</script>

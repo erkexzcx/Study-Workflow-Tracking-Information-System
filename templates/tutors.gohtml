@@ -1,0 +1,506 @@
+<section class="content-header">
+        <h1>Tutors</h1>
+        <ol class="breadcrumb">
+            <li><i class="fa fa-home"></i> Home</li>
+            <li><i class="fa fa-eur"></i> Tutors</li>
+        </ol>
+    </section>
+    
+    <section class="content container-fluid">
+    
+        <style>
+            /* Assignment block inside the container */
+            .box-body > div{
+                background-color: #f3f6f9;
+                margin-left: -5px;
+                margin-right: -5px;
+                padding-left: 10px;
+                margin-top: -10px;
+                margin-bottom: -5px;
+                background-color: #f7eff3;
+                border-top: 1px solid #d3d6d8 !important;
+                border-right: 1px solid #d3d6d8 !important;
+                border-bottom: 1px solid #d3d6d8 !important;
+                overflow-wrap: break-word;
+            }
+            /* Assignment block content */
+            .box-body > div > div{
+                margin-right: 10px;
+            }
+            /* Assignment block title */
+            .mycustomtitle{
+                padding-bottom: 10px;
+                font-size: 14px
+            }
+            /* Edit button */
+            .btn-div{
+                margin-right: -1px !important;
+                margin-top: -1px !important;
+            }
+            /* Override padding settings for each element */
+            .grid-item{
+                padding: 10px !important;
+            }
+        </style>
+    
+        {{if .admin}}
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn btn-default" onclick="new_tutor()"><i class="fa fa-plus"></i> New</button>
+                </div>
+            </div>
+        {{end}}
+    
+        <div class="row grid">
+
+            {{range .tutors}}
+
+            <div class="grid-sizer col-xs-12 col-sm-6 col-md-4 col-lg-3"></div>
+            <div class="grid-item col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="box-body">
+                    <div class="row" style="border-left: 4px solid #00c0ef">
+
+                        {{if $.admin}}
+                            <div class="btn-div">
+                                <button class="btn btn-xs btn-flat btn-danger delete-btn pull-right" item-id="{{.ID}}"><i class="fa fa-trash"></i> Delete</button>
+                                <button class="btn btn-xs btn-flat btn-default edit-btn pull-right" item-id="{{.ID}}"><i class="fa fa-pencil"></i> Edit</button>
+                            </div>
+                        {{end}}
+
+                       <div class="mycustomtitle"><b>{{.Title}}</b></div>
+
+                        {{if .Number}}
+                            <div>
+                                <b>Number</b>: <a href="tel:{{.Number}}">{{.Number}}</a>
+                            </div>
+                        {{end}}
+
+                        {{if .Email}}
+                            <div>
+                                <b>Email</b>: <a href="mailto:{{.Email}}">{{.Email}}</a>
+                            </div>
+                        {{end}}
+
+                        {{if .Address}}
+                            <div>
+                                <b>Address</b>: <a target="_blank" href="https://www.google.lt/maps/place/{{.Address}}">{{.Address}}</a>
+                            </div>
+                        {{end}}
+
+                        {{if .URL}}
+                            <div>
+                                <b>Website</b>: <a target="_blank" href="{{.URL}}">{{printf "%.50s" .URL}}</a>
+                            </div>
+                        {{end}}
+                        
+                        {{if .Note}}
+                            <div>
+                                <b>Comment</b>: {{.Note}}
+                            </div>
+                        {{end}}
+
+                    </div>
+                </div>
+            </div>
+
+            {{end}}
+
+        </div>
+
+        {{if .admin}}
+        <!----------------- New modal ----------------->
+        <form action="/tutors" method="post" id="new-form">
+            <div class="modal" id="new-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Add new tutor</h4>
+                        </div>
+    
+                        <div class="modal-body loaded">
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="title">Title</label>
+                                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter title...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="number">Number</label>
+                                        <input type="text" class="form-control" id="number" name="number" data-inputmask="'mask': '+999 999 99999'" placeholder="(OPTIONAL) Enter phone number...">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="text" class="form-control" id="email" name="email" placeholder="(OPTIONAL) Enter email...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="address">Address</label>
+                                        <input type="text" class="form-control" id="address" name="address" placeholder="(OPTIONAL) Enter address...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="url">Website</label>
+                                        <input type="text" class="form-control" id="url" name="url" placeholder="(OPTIONAL) Enter website...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label>Note</label>
+                                        <textarea type="text" class="form-control" rows="4" style="resize: vertical;" id="note" name="note" placeholder="(OPTIONAL) Enter note..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+    
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="Submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!----------------- End of new modal ----------------->
+
+        <!----------------- Edit modal ----------------->
+        <form action="/tutors/:id" method="put" id="edit-form">
+            <div class="modal" id="edit-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title"></h4>
+                        </div>
+    
+                        <div class="modal-body loaded">
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="title">Title</label>
+                                        <input type="text" class="form-control" id="title" name="title" placeholder="Enter title...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="number">Number</label>
+                                        <input type="text" class="form-control" id="number" name="number" data-inputmask="'mask': '+999 999 99999'" placeholder="(OPTIONAL) Enter phone number...">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="text" class="form-control" id="email" name="email" placeholder="(OPTIONAL) Enter email...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="address">Address</label>
+                                        <input type="text" class="form-control" id="address" name="address" placeholder="(OPTIONAL) Enter address...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="url">Website</label>
+                                        <input type="text" class="form-control" id="url" name="url" placeholder="(OPTIONAL) Enter website...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label>Note</label>
+                                        <textarea type="text" class="form-control" rows="4" style="resize: vertical;" id="note" name="note" placeholder="(OPTIONAL) Enter note..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <small>
+                                        Updated by <b><font id="updated_by"></font></b><BR>
+                                        Updated on <b><font id="updated_on"></font></b><BR>
+                                    </small>
+                                </div>
+                                <div class="col-md-6">
+                                    <small>
+                                        Created by <b><font id="created_by"></font></b><BR>
+                                        Created on <b><font id="created_on"></font></b><BR>
+                                    </small>
+                                </div>
+                            </div>
+    
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="Submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!----------------- End of edit modal ----------------->
+    
+        <!----------------- Delete modal ----------------->
+        <form action="/tutors/:id" method="delete" id="delete-form">
+            <div class="modal modal-danger" id="delete-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Confirmation required</h4>
+                        </div>
+    
+                        <div class="modal-body loaded" style="display: none">
+    
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="Submit" class="btn btn-primary">Delete</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!----------------- End of Delete modal ----------------->
+    
+    {{end}}
+
+    </section>
+
+    {{if .admin}}
+    
+    <script>
+        function new_tutor() {
+    
+            // Define modal:
+            var modal = $('#new-modal');
+    
+            // Define editable (by user) modal form elements:
+            var input_title = modal.find('#title');
+            var input_number = modal.find('#number');
+            var input_email = modal.find('#email');
+            var input_address = modal.find('#address');
+            var input_url = modal.find('#url');
+            var input_note = modal.find('#note');
+    
+            input_title.val('');
+            input_number.val('');
+            input_email.val('');
+            input_address.val('');
+            input_url.val('');
+            input_note.val('');
+    
+            // Display modal:
+            modal.modal({ backdrop: 'static' });
+    
+            // Focus on input box:
+            input_title.focus();
+        }
+
+        $('.edit-btn:not(.disabled)').on('click', function () {
+            // Define modal:
+            var modal = $('#edit-modal');
+    
+            // Define editable (by user) modal form elements:
+            var input_title = modal.find('#title');
+            var input_number = modal.find('#number');
+            var input_email = modal.find('#email');
+            var input_address = modal.find('#address');
+            var input_url = modal.find('#url');
+            var input_note = modal.find('#note');
+    
+            // Modal parts:
+            var modal_title = modal.find('.modal-title');
+            var modal_updated_by = modal.find('#updated_by');
+            var modal_updated_on = modal.find('#updated_on');
+            var modal_created_by = modal.find('#created_by');
+            var modal_created_on = modal.find('#created_on');
+    
+            // Prepare modal as "loading, please wait":
+            showModalContentLoading(modal);
+
+            // Display modal:
+            modal.modal({ backdrop: 'static' });
+            // ID of clicked item (row):
+            id = $(this).attr('item-id');
+            modal.parent().attr('action', '/tutors/' + id)
+            $.ajax({
+                method: "GET",
+                url: "/tutors/" + id,
+                dataType: 'json',
+                success: function (data) {
+                    // Fill up user editable fields:
+                    input_title.val(data.title);
+                    input_number.val(data.number);
+                    input_email.val(data.email);
+                    input_address.val(data.address);
+                    input_url.val(data.url);
+                    input_note.val(data.note);
+        
+                    // Set modal title:
+                    modal_title.html('Editing "<b>' + data.title + '</b>".');
+        
+                    // Set 'updated by' and 'created by' values:
+                    modal_updated_by.html(data.updated_by);
+                    modal_updated_on.html(data.updated_on);
+                    modal_created_by.html(data.created_by);
+                    modal_created_on.html(data.created_on);
+                    // Show modal with input elements:
+                    showModalContentLoaded(modal);
+        
+                    // Focus on input box:
+                    input_title.focus();
+
+                    // Show expected modal:
+                    showModalContentLoaded(modal);
+                },
+                error: function (request, status, error) {
+                    ajaxErrorHandler(request, status, error);
+                    showModalContentFailed(modal);
+                }
+            });
+        });
+    
+        /************* 'Delete' function *************/
+        $('.delete-btn:not(.disabled)').on('click', function () {
+            // Define modal:
+            var modal = $('#delete-modal');
+
+            // Prepare modal as "loading, please wait":
+            showModalContentLoading(modal);
+            // Display modal:
+            modal.modal({ backdrop: 'static' });
+            // ID of clicked item (row):
+            id = $(this).attr('item-id');
+            modal.parent().attr('action', '/tutors/' + id)
+            $.ajax({
+                method: "GET",
+                url: "/tutors/" + id,
+                dataType: 'json',
+                success: function (data) {
+                    // Set modal content:
+                    modal.find('.modal-body.loaded').html('Do you really want to delete tutor <b>' + data.title + '</b>?');
+
+                    // Show expected modal:
+                    showModalContentLoaded(modal);
+                },
+                error: function (request, status, error) {
+                    ajaxErrorHandler(request, status, error);
+                    showModalContentFailed(modal);
+                }
+            });
+        });
+    
+        /******************** Form validator for #editable-form ********************/
+        validateForm($('#new-form'), "Tutor has been created!");
+        validateForm($('#edit-form'), "Tutor has been updated!");
+        function validateForm(_form, successMessage) {
+            _form.validate({
+                errorElement: "div",
+                errorClass: 'help-block',
+                highlight: function (element) {
+                    $(element).parents().eq(0).addClass("has-error");
+                },
+                unhighlight: function (element) {
+                    $(element).parents().eq(0).removeClass("has-error");
+                },
+                rules: {
+                    "title": {
+                        required: true,
+                        maxlength: 60
+                    },
+                    "number": {
+                        maxlength: 100
+                    },
+                    "email": {
+                        maxlength: 254,
+                        email: true
+                    },
+                    "address": {
+                        maxlength: 100
+                    },
+                    "url": {
+                        maxlength: 1000
+                    },
+                    "note": {
+                        maxlength: 1000
+                    }
+                },
+                messages: {
+                    "title": {
+                        required: "You must enter the title!",
+                        maxlength: "Title must be no longer than 60 characters long!"
+                    },
+                    "number": {
+                        maxlength: "Number must be no longer than 100 characters long!"
+                    },
+                    "email": {
+                        maxlength: "Email must be no longer than 100 characters long!",
+                        email: "Must be correct email!"
+                    },
+                    "address": {
+                        maxlength: "Address must be no longer than 100 characters long!"
+                    },
+                    "url": {
+                        maxlength: "URL must be no longer than 1000 characters long!"
+                    },
+                    "note": {
+                        maxlength: "Note must be no longer than 1000 characters long!"
+                    }
+                },
+                submitHandler: function (form) {
+                    submitAjaxForm(form, successMessage, function () {
+                        $('[href="#tutors"]:first').click(); // Refresh page
+                    });
+                    return false; // Prevent further events, since we use ajax.
+                }
+            });
+        }
+    
+    // Ajax submit delete form:
+    $("#delete-form").submit(function (e) {
+        submitAjaxForm(this, "Tutor has been deleted!", function () {
+            $('[href="#tutors"]:first').click(); // Refresh page
+        });
+        return false; // Prevent further events, since we use ajax.
+    });
+    </script>
+    
+    {{end}}

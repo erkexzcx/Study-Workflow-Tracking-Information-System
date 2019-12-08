@@ -1,0 +1,14 @@
+[Unit]
+Description=SWTIS
+After=network.target
+
+[Service]
+Type=simple
+ExecStartPre=/sbin/iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+ExecStart=/opt/swtis/swtis
+ExecStop=/usr/bin/killall /opt/swtis/swtis
+ExecStopPost=/sbin/iptables -t nat -D PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+WorkingDirectory=/opt/swtis
+
+[Install]
+WantedBy=multi-user.target

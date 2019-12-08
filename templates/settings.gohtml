@@ -1,0 +1,187 @@
+<section class="content-header">
+    <h1>Settings</h1>
+    <ol class="breadcrumb">
+        <li><i class="fa fa-home"></i> Home</a></li>
+        <li><i class="fa fa-gear"></i> Settings</li>
+    </ol>
+</section>
+
+<section class="content container-fluid">
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+
+            <div class="box box-primary">
+                <div class="box-body">
+                    <img class="profile-user-img img-responsive img-circle picture" src="{{.picture}}" onerror="this.onerror=null; this.src='/images/default_picture.png'" alt="">
+                    <h3 class="profile-username text-center">{{.name}} {{.surname}}</h3>
+                    <ul class="list-group list-group-unbordered">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Theme</a>
+                                </li>
+                                <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Picture</a></li>
+                                <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Password</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <!--------------------------------------------->
+                                <div class="tab-pane active" id="tab_1">
+                                    <div class="callout callout-warning" id="unhide-me" style="display: none">
+                                        <h4>Changes are not saved!</h4>
+                                        <p>To make this style permanent - click on <b>Save</b> button.</p>
+                                    </div>
+                                    <form action="" method="post" id="skin-form">
+                                        {{range .themes}}
+                                        <p><input type="radio" name="skin" value="{{.ID}}" class="minimal"
+                                                {{if eq .ID $.activeTheme}}checked{{end}} codename="{{.Code}}"> {{.Title}}</p>
+                                        {{end}}
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </form>
+                                </div>
+                                <!--------------------------------------------->
+                                <div class="tab-pane" id="tab_2">
+                                    <form action="/settings/picture" method="post" id="picture-form">
+                                        <div class="form-group">
+                                            <label for="picture">Picture URL</label>
+                                            <input type="text" class="form-control" id="picture" name="picture"
+                                                value="{{.picture}}" placeholder="Enter Picture URL to update...">
+                                            <small><a id="load_gravatar" style="cursor: pointer;"><b>Insert picture
+                                                        URL</b></a> from gravatar. More info at <a
+                                                    href="https://gravatar.com/">gravatar.com</a>.</small>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="button" id="preview_picture"
+                                            class="btn btn-default">Preview</button>
+                                    </form>
+                                </div>
+                                <!--------------------------------------------->
+                                <div class="tab-pane" id="tab_3">
+                                    <form action="/settings/password" method="post" id="password-form">
+                                        <div class="form-group">
+                                            <label for="old_password">Old password</label>
+                                            <input type="password" class="form-control" id="old_password"
+                                                name="old_password" placeholder="Enter old password...">
+                                            <label for="new_password">New password</label>
+                                            <input type="password" class="form-control" id="new_password"
+                                                name="new_password" placeholder="Enter new password...">
+                                            <label for="re_new_password">Repeat new password</label>
+                                            <input type="password" class="form-control" id="re_new_password"
+                                                name="re_new_password" placeholder="Enter again new password...">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Change</button>
+                                    </form>
+                                </div>
+                                <!--------------------------------------------->
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    /**************************************************************************/
+    $(document).ready(function () {
+
+        $('input').on('ifChecked', function (event) {
+            // Figure out which theme user selected:
+            var skin_id = event.target.value;
+            var codename = $('input[value="' + skin_id + '"]').attr('codename');
+
+            // Replace theme in main HTML header (CSS file):
+            $('head > link[href*="/css/adminlte_skins/"]').attr('href', '/css/adminlte_skins/' + codename + '.min.css');
+
+            // Change theme class in HTML body:
+            var bodyelement = $('body');
+            $('input[codename]').each(function () {
+                bodyelement.removeClass($(this).attr('codename'))
+            });
+            bodyelement.addClass(codename);
+        });
+
+        $("#skin-form").submit(function (e) {
+            successMessage = "Theme has been updated!";
+            var theme_value = $(".checked input[name]").val();
+            $(this).attr('action', '/settings/themes/' + theme_value);
+            submitAjaxForm(this, successMessage, function () {
+                $('[href="#settings"]:first').click(); // Refresh page
+            });
+            return false; // Prevent further events, since we use ajax.
+        });
+
+        /**************************************************************************/
+
+        var pictureInputField = $('#picture');
+
+        $('#preview_picture').on('click', function () {
+            if ((pictureInputField.val()).trim() == '') {
+                pictureInputField.val("/images/default_picture.png");
+            }
+            $('img.picture').attr('src', pictureInputField.val());
+        });
+
+        $("#picture-form").submit(function (e) {
+            var form = $(this);
+            $('#preview_picture').click();
+            submitAjaxForm(this, "Profile picture has been updated!", function (){});
+            return false; // Prevent further events, since we use ajax.
+        });
+
+        $('#load_gravatar').on('click', function () {
+            pictureInputField.val("https://www.gravatar.com/avatar/{{.emailMD5}}?s=512"); // s=1-2048
+        });
+
+        $('#password-form').validate({
+            errorElement: "div",
+            errorClass: 'help-block',
+            highlight: function (element) {
+                $(element).parents().eq(0).addClass("has-error");
+            },
+            unhighlight: function (element) {
+                $(element).parents().eq(0).removeClass("has-error");
+            },
+            rules: {
+                "old_password": {
+                    required: true
+                },
+                "new_password": {
+                    required: true,
+                    minlength: 6,
+                    atLeastUppercase: true,
+                    atLeastLowercase: true,
+                    atLeastNumber: true,
+                    notEqualTo: "#old_password"
+                },
+                "re_new_password": {
+                    required: true,
+                    equalTo: "#new_password",
+                }
+            },
+            messages: {
+                "old_password": {
+                    required: "You must enter your old password!"
+                },
+                "new_password": {
+                    required: "You must enter the password!",
+                    minlength: "Password must be at least 6 characters long",
+                    atLeastUppercase: "Password must contain at least one UPPERCASE letter",
+                    atLeastLowercase: "Password must contain at least one lowercase letter",
+                    atLeastNumber: "Password must contain at least one number",
+                    notEqualTo: "New password must not be identical to old password"
+                },
+                "re_new_password": {
+                    required: "You must enter new password twice!",
+                    equalTo: "New passwords do not match!"
+                }
+            },
+            submitHandler: function (form) {
+                successMessage = "Password has been changed!";
+                submitAjaxForm(form, successMessage, function () {
+                    $(form).find('[type="submit"]').removeClass('disabled');
+                });
+                return false; // Prevent further events, since we use ajax.
+            }
+        });
+    });
+</script>

@@ -1,0 +1,519 @@
+<section class="content-header">
+        <h1>Subjects</h1>
+        <ol class="breadcrumb">
+            <li><i class="fa fa-home"></i> Home</li>
+            <li><i class="fa fa-address-book-o"></i> Subjects</li>
+        </ol>
+    </section>
+    
+    <section class="content container-fluid">
+    
+        <!----------------- Subjects table ----------------->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box-body">
+                        <table id="subjects_table" class="table table-bordered table-hover nowrap table-condensed responsive">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Assignments</th>
+                                    <th>Teacher</th>
+                                    <th>Semester</th>
+                                    <th>Website</th>
+                                    <th>Access key</th>
+                                    {{if .admin}}<th>Actions</th>{{end}}
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            {{range .subjects}}
+                                <tr>
+                                    <td>
+                                        {{if .SemesterActive}}
+                                            <i class="fa fa-circle" style="color: lightgreen"></i>
+                                        {{else}}
+                                            <i class="fa fa-circle" style="color: red"></i>
+                                        {{end}}
+                                        {{.Title}}
+                                    </td>
+                                    <td>{{.Assignments}}</td>
+                                    <td>{{.Name}} {{.Surname}}</td>
+                                    <td>{{.SemesterTitle}}</td>
+                                    <td><a href="{{.URL}}">{{printf "%.40s" .URL}}</a></td>
+                                    <td>{{.AccessKey}}</td>
+                                    {{if $.admin}}
+                                        <td style="white-space: nowrap">
+                                            <button class="btn btn-default btn-xs btn-flat edit-btn" title="Edit subject" item-id="{{.ID}}">Edit</button>
+                                            <button class="btn btn-danger btn-xs btn-flat delete-btn" title="Delete subject" item-id="{{.ID}}">Delete</button>
+                                        </td>
+                                    {{end}}
+                                </tr>
+                            {{end}}
+        
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!----------------- End of Subjects table ----------------->
+    
+        <!----------------- New subject modal ----------------->
+        <form action="/subjects" method="post" id="new-form">
+            <div class="modal" id="new-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Create new subject</h4>
+                        </div>
+                        <div class="modal-body">
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="title">Title</label>
+                                        <input type="text" class="form-control modal-editable" id="title" name="title" placeholder="Enter title...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="teacher">Teacher</label>
+                                        <select class="form-control" id="teacher" name="teacher">
+                                            {{range .teachers}}
+                                            <option value="{{.ID}}">{{.Name}} {{.Surname}}</option>
+                                            {{end}}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <label for="url">Website</label>
+                                        <input type="text" class="form-control modal-editable" id="url" name="url" placeholder="(OPTIONAL) Enter website...">
+                                    </div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <div class="form-group">
+                                        <label for="access_key">Access key</label>
+                                        <input type="text" class="form-control modal-editable" id="access_key" name="access_key" placeholder="(OPTIONAL) Enter access key...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="semester">Semester</label>
+                                        <select class="form-control" id="semester" name="semester">
+                                            {{range .semesters}}
+                                            <option value="{{.ID}}">{{if .Active}}(Active) {{end}}{{.Title}}</option>
+                                            {{end}}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+    
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="Submit" class="btn btn-primary">Create</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!----------------- End of New subject modal ----------------->
+    
+        <!----------------- Edit subject modal ----------------->
+        <form action="" method="put" id="edit-form">
+            <div class="modal" id="edit-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title"></h4>
+                        </div>
+                        <div class="modal-body loaded">
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="title">Title</label>
+                                        <input type="text" class="form-control modal-editable" id="title" name="title" placeholder="Enter title...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="teacher">Teacher</label>
+                                        <select class="form-control" id="teacher" name="teacher">
+                                            {{range .teachers}}
+                                            <option value="{{.ID}}">{{.Name}} {{.Surname}}</option>
+                                            {{end}}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-7">
+                                    <div class="form-group">
+                                        <label for="url">Website</label>
+                                        <input type="text" class="form-control modal-editable" id="url" name="url" placeholder="(OPTIONAL) Enter website...">
+                                    </div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <div class="form-group">
+                                        <label for="access_key">Access key</label>
+                                        <input type="text" class="form-control modal-editable" id="access_key" name="access_key" placeholder="(OPTIONAL) Enter access key...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="semester">Semester</label>
+                                        <select class="form-control" id="semester" name="semester">
+                                            {{range .semesters}}
+                                            <option value="{{.ID}}">{{if .Active}}(Active) {{end}}{{.Title}}</option>
+                                            {{end}}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!---------->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <small>
+                                        Updated by <b><font id="updated_by"></font></b><BR>
+                                        Updated on <b><font id="updated_on"></font></b><BR>
+                                    </small>
+                                </div>
+                                <div class="col-md-6">
+                                    <small>
+                                        Created by <b><font id="created_by"></font></b><BR>
+                                        Created on <b><font id="created_on"></font></b><BR>
+                                    </small>
+                                </div>
+                            </div>
+                            <!---------->
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="Submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!----------------- End of Edit subject modal ----------------->
+    
+        <!----------------- Delete modal ----------------->
+        <form action="" method="delete" id="delete-form">
+            <div class="modal modal-danger" id="delete-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Confirmation required</h4>
+                        </div>
+    
+                        <div class="modal-body loaded" style="display: none"></div>
+
+                        <div class="modal-footer">
+                            <button type="Submit" class="btn btn-primary">Delete</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!----------------- End of Delete modal ----------------->
+    
+    </section>
+    
+    <script>
+    
+        /************* 'Datatables' functionality *************/
+        var table = $('#subjects_table').DataTable({
+            // Make it really responsive, so you don't have to reboot when resizing page:
+            autoWidth: false,
+            // Make it responsive (mobile-friendly):
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.childRowImmediate,
+                    type: ''
+                }
+            },
+            // Customize about of records to show per page:
+            "lengthMenu": [
+                [25, 50, 100, -1],
+                [25, 50, 100, "All"]
+            ],
+            // Disable initial sort (it's done by database query anyway):
+            sorting: [],
+            // Disable sorting on last column:
+            "columnDefs": [
+                {{if .admin}}
+                {
+                    // Disable sorting on last column:
+                    "targets": [-1],
+                    "sortable": false
+                },
+                {{end}}
+                {
+                    responsivePriority: 1,
+                    targets: 0
+                }{{if .admin}},
+                {
+                    responsivePriority: 2,
+                    targets: -1
+                }{{end}}
+            ],
+            // DOM ordering settings for DataTables + classes:
+            dom: '<"pull-left hidden-xs"B><"visible-xs text-center"B><"pull-right hidden-xs"f><"visible-xs-block"f>ltip',
+            // Add export buttons to dataTable (DataTables way).
+            // see https://datatables.net/extensions/buttons/examples/initialisation/export :
+            buttons: [
+                {{if .admin}}
+                {
+                    text: '<i class="fa fa-plus"> New</i>',
+                    className: 'btn btn-default btn-sm btn-flat',
+                    action: function (e, dt, node, config) {
+                        newSubject();
+                    }
+                },
+                {{end}}
+                {
+                    extend: 'copy', /* https://datatables.net/reference/button/copy */
+                    className: 'btn btn-default btn-sm btn-flat',
+                    text: '<i class="fa fa-copy"> Copy</i>',
+                    exportOptions: {
+                        // Avoid 6th column (actions):
+                        {{if .admin}}columns: ':not(:last-child)',{{end}}
+                        // Export original data (for example, truncated URLs will not be truncated):
+                        orthogonal: 'export'
+                    }
+                },
+                {
+                    extend: 'csv', /* https://datatables.net/reference/button/csv */
+                    className: 'btn btn-default btn-sm btn-flat',
+                    text: '<i class="fa fa-download"> CSV</i>',
+                    filename: 'Semesters',
+                    exportOptions: {
+                        // Avoid 6th column (actions):
+                        {{if .admin}}columns: ':not(:last-child)',{{end}}
+                        // Export original data (for example, truncated URLs will not be truncated):
+                        orthogonal: 'export'
+                    }
+                },
+                {
+                    extend: 'print', /* https://datatables.net/reference/button/print */
+                    className: 'btn btn-default btn-sm btn-flat',
+                    text: '<i class="fa fa-print"> Print</i>',
+                    exportOptions: {
+                        // Avoid 6th column (actions):
+                        {{if .admin}}columns: ':not(:last-child)'{{end}}
+                    },
+                    customize: function (win) {
+                        // Some styling:
+                        $(win.document.body).css('font-size', '10pt');
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                    }
+                }
+            ]
+        });
+
+        {{if .admin}}
+        function newSubject() {
+            // NOTE: This function is called from DataTables!
+    
+            // Define modal:
+            var modal = $('#new-modal');
+    
+            // Define editable (by user) modal form elements:
+            var input_title = modal.find('#title');
+            var input_teacher = modal.find('#teacher');
+            var input_url = modal.find('#url');
+            var input_access_key = modal.find('#access_key');
+            var input_semester = modal.find('#semester');
+    
+            // Display modal:
+            modal.modal({ backdrop: 'static' });
+    
+            input_title.val('');
+            input_teacher.val(input_teacher.children(0).attr('value')).change();
+            input_url.val('');
+            input_access_key.val('');
+            input_semester.val(input_semester.children(0).attr('value')).change();
+
+            // Focus on input box:
+            input_title.focus();
+        }
+    
+        /************* 'Edit' function *************/
+        table.on('click', '.edit-btn:not(.disabled)', function () {
+            // Define modal:
+            var modal = $('#edit-modal');
+    
+            // Define editable (by user) modal form elements:
+            var input_title = modal.find('#title');
+            var input_teacher = modal.find('#teacher');
+            var input_url = modal.find('#url');
+            var input_access_key = modal.find('#access_key');
+            var input_semester = modal.find('#semester');
+    
+            // Modal parts:
+            var modal_title = modal.find('.modal-title');
+            var modal_updated_by = modal.find('#updated_by');
+            var modal_updated_on = modal.find('#updated_on');
+            var modal_created_by = modal.find('#created_by');
+            var modal_created_on = modal.find('#created_on');
+    
+            // Prepare modal as "loading, please wait":
+            showModalContentLoading(modal);
+            // Display modal:
+            modal.modal({ backdrop: 'static' });
+            // ID of clicked item (row):
+            id = $(this).attr('item-id');
+            modal.parent().attr('action', '/subjects/' + id);
+            $.ajax({
+                method: "GET",
+                url: '/subjects/' + id,
+                dataType: 'json',
+                success: function (data) {
+
+                    input_title.val(data.title);
+                    input_teacher.val(data.teacher_id).change();
+                    input_url.val(data.url);
+                    input_access_key.val(data.access_key);
+                    input_semester.val(data.semester_id).change();
+
+                    // Set modal title:
+                    modal_title.html('Editing "<b>' + data.title + '</b>".');
+        
+                    // Set 'updated by' and 'created by' values:
+                    modal_updated_by.html(data.updated_by);
+                    modal_updated_on.html(data.updated_on);
+                    modal_created_by.html(data.created_by);
+                    modal_created_on.html(data.created_on);
+        
+                    // Show expected modal:
+                    showModalContentLoaded(modal);
+        
+                    // Focus on title input box:
+                    input_title.focus();
+                },
+                error: function (request, status, error) {
+                    ajaxErrorHandler(request, status, error);
+                    showModalContentFailed(modal);
+                }
+            });
+
+        });
+    
+        /************* 'Delete' function *************/
+        table.on('click', '.delete-btn:not(.disabled)', function () {
+            // Define modal:
+            var modal = $('#delete-modal');
+    
+            // Prepare modal as "loading, please wait":
+            showModalContentLoading(modal);
+            // Display modal:
+            modal.modal({ backdrop: 'static' });
+            // ID of clicked item (row):
+            id = $(this).attr('item-id');
+            modal.parent().attr('action', '/subjects/' + id);
+            // Fetch JSON formatted data from the server with below URL:
+            $.ajax({
+                method: "GET",
+                url: '/subjects/' + id,
+                dataType: 'json',
+                success: function (data) {
+                    // Set modal content:
+                    modal.find('.modal-body.loaded').html('Do you really want to delete subject <b>' + data.title + '</b>?');
+        
+                    // Show expected modal:
+                    showModalContentLoaded(modal);
+                },
+                error: function (request, status, error) {
+                    ajaxErrorHandler(request, status, error);
+                    showModalContentFailed(modal);
+                }
+            });
+        });
+    
+        /******************** Form validator for #editable-form ********************/
+        validateForm($('#new-form'), "Subject has been created!");
+        validateForm($('#edit-form'), "Subject has been updated!");
+        function validateForm(_form, successMessage) {
+            _form.validate({
+                errorElement: "div", errorClass: 'help-block',
+                highlight: function (element) {
+                    $(element).parents().eq(0).addClass("has-error");
+                },
+                unhighlight: function (element) {
+                    $(element).parents().eq(0).removeClass("has-error");
+                },
+                rules: {
+                    "title": {
+                        required: true,
+                        maxlength: 60
+                    },
+                    "url": {
+                        maxlength: 1000
+                    },
+                    "access_key": {
+                        maxlength: 100
+                    }
+    
+                },
+                messages: {
+                    "title": {
+                        required: "You must enter subject's title!",
+                        maxlength: "Title must be no longer than 60 characters!"
+                    },
+                    "url": {
+                        maxlength: "Website should not be longer than 1000 characters!"
+                    },
+                    "access_key": {
+                        maxlength: "Access key should not be longer than 100 characters!"
+                    }
+                },
+                submitHandler: function (form) {
+                    submitAjaxForm(form, successMessage, function () {
+                        $('[href="#subjects"]:first').click(); // Refresh page
+                    });
+                    return false; // Prevent further events, since we use ajax.
+                }
+            });
+        }
+    
+        // Ajax submit delete form:
+        $("#delete-form").submit(function (e) {
+            submitAjaxForm(this, "Subject has been deleted!", function () {
+                $('[href="#subjects"]:first').click(); // Refresh page
+            });
+            return false; // Prevent further events, since we use ajax.
+        });
+
+        {{end}}
+
+    </script>

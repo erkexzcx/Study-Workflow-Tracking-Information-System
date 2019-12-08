@@ -1,0 +1,476 @@
+<section class="content-header">
+        <h1>Semesters</h1>
+        <ol class="breadcrumb">
+            <li><i class="fa fa-home"></i> Home</a></li>
+            <li><i class="fa fa-graduation-cap"></i> Teachers</li>
+        </ol>
+    </section>
+    
+    <section class="content container-fluid">
+    
+        <!----------------- Teachers table  ----------------->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-info">
+                    <div class="box-body">
+                        <table id="teachers_table" class="table table-bordered table-hover nowrap table-condensed">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2">Name</th>
+                                    <th rowspan="2">Surname</th>
+                                    <th rowspan="2">Email</th>
+                                    <th colspan="2">Has this semester</th>
+                                    <th colspan="2">Has in total</th>
+                                    {{if .admin}}<th rowspan="2">Actions</th>{{end}}
+                                </tr>
+                                <tr>
+                                    <th>Subjects</th>
+                                    <th>Assignments</th>
+                                    <th>Subjects</th>
+                                    <th>Assignments</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {{range .teachers}}
+                                <tr>
+                                    <td>{{.Name}}</td>
+                                    <td>{{.Surname}}</td>
+                                    <td>{{.Email}}</td>
+                                    <td>{{.SemesterSubjects}}</td>
+                                    <td>{{.SemesterAssignments}}</td>
+                                    <td>{{.TotalSubjects}}</td>
+                                    <td>{{.TotalAssignments}}</td>
+                                    {{if $.admin}}
+                                    <td style="white-space: nowrap">
+                                        <button type="button" class="btn btn-xs btn-default btn-flat edit-btn"
+                                            item-id="{{.ID}}">Edit
+                                        </button>
+                                        <button type="button"
+                                            class="btn btn-xs btn-danger btn-flat delete-btn"
+                                            item-id="{{.ID}}"
+                                            title="{{if ne .TotalSubjects 0}} You cannot delete teacher which has subjects assigned!{{end}}">Delete
+                                        </button>
+                                    </td>
+                                    {{end}}
+                                </tr>
+                                {{end}}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!----------------- End of Teachers table ----------------->
+
+        {{if .admin}}
+    
+        <!----------------- New teacher modal ----------------->
+        <form action="/teachers" method="post" id="new-form">
+            <div class="modal" id="new-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Create new teacher</h4>
+                        </div>
+    
+                        <div class="modal-body loaded">
+    
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control modal-editable" id="name" name="name" placeholder="Enter name...">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="surname">Surname</label>
+                                        <input type="text" class="form-control modal-editable" id="surname" name="surname" placeholder="Enter surname...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="text" class="form-control modal-editable" id="email" name="email" placeholder="Enter email...">
+                                    </div>
+                                </div>
+                            </div>
+    
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="Submit" class="btn btn-primary">Create</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!----------------- End of New teacher modal ----------------->
+    
+        <!----------------- Edit modal ----------------->
+        <form action="" method="put" id="edit-form">
+            <div class="modal" id="edit-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content ajax-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title"></h4>
+                        </div>
+    
+                        <div class="modal-body loaded" style="display: none">
+                            <!---------->
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control modal-editable" id="name" name="name" placeholder="Enter name...">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="surname">Surname</label>
+                                        <input type="text" class="form-control modal-editable" id="surname" name="surname" placeholder="Enter surname...">
+                                    </div>
+                                </div>
+                            </div>
+                            <!---------->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="text" class="form-control modal-editable" id="email" name="email" placeholder="Enter email...">
+                                    </div>
+                                </div>
+                            </div>
+                            <!---------->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <small>
+                                        Updated by <b><font id="updated_by"></font></b><BR>
+                                        Updated on <b><font id="updated_on"></font></b><BR>
+                                    </small>
+                                </div>
+                                <div class="col-md-6">
+                                    <small>
+                                        Created by <b><font id="created_by"></font></b><BR>
+                                        Created on <b><font id="created_on"></font></b><BR>
+                                    </small>
+                                </div>
+                            </div>
+                            <!---------->
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="Submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!----------------- End of Edit modal ----------------->
+    
+        <!----------------- Delete modal ----------------->
+        <form action="/semesters" method="delete" id="delete-form">
+            <div class="modal modal-danger" id="delete-modal">
+                <div class="modal-dialog">
+                    <div class="modal-content ajax-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Confirmation required</h4>
+                        </div>
+    
+                        <div class="modal-body loaded" style="display: none">
+    
+                        </div>
+    
+                        <div class="modal-footer">
+                            <button type="Submit" class="btn btn-primary">Delete</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!----------------- End of Delete modal ----------------->
+
+        {{end}}
+    
+    </section>
+    
+    <script>
+    
+        /************* 'Datatables' function *************/
+        var table = $('#teachers_table').DataTable({
+            // Make it really responsive, so you don't have to reboot when resizing page:
+            autoWidth: false,
+            // Make it responsive (mobile-friendly):
+            responsive: {
+                details: {
+                    display: $.fn.dataTable.Responsive.display.childRowImmediate,
+                    type: ''
+                }
+            },
+            // Customize about of records to show per page:
+            "lengthMenu": [
+                [25, 50, 100, -1],
+                [25, 50, 100, "All"]
+            ],
+            // Disable initial sort (it's done by database query anyway):
+            sorting: [],
+            // DOM ordering settings for DataTables + classes:
+            dom: '<"pull-left hidden-xs"B><"visible-xs text-center"B><"pull-right hidden-xs"f><"visible-xs-block"f>ltip',
+            // Add export buttons to dataTable (DataTables way).
+            // see https://datatables.net/extensions/buttons/examples/initialisation/export :
+            columnDefs: [
+                {{if .admin}}
+                {
+                    // Disable sorting on last column:
+                    "targets": [-1],
+                    "sortable": false
+                },
+                {{end}}
+                {
+                    responsivePriority: 1,
+                    targets: 0
+                }{{if .admin}},
+                {
+                    responsivePriority: 2,
+                    targets: -1
+                }{{end}}
+            ],
+            buttons: [
+                {{if .admin}}
+                {
+                    text: '<i class="fa fa-plus"> New</i>',
+                    className: 'btn btn-default btn-sm btn-flat',
+                    action: function (e, dt, node, config) {
+                        newTeacher();
+                    }
+                },
+                {{end}}
+                {
+                    extend: 'copy', /* https://datatables.net/reference/button/copy */
+                    className: 'btn btn-default btn-sm btn-flat',
+                    text: '<i class="fa fa-copy"> Copy</i>',
+                    exportOptions: {
+                        // Avoid 6th column (actions):
+                        {{if .admin}}columns: ':not(:last-child)',{{end}}
+                        // Export original data (for example, truncated URLs will not be truncated):
+                        orthogonal: 'export'
+                    }
+                },
+                {
+                    extend: 'csv', /* https://datatables.net/reference/button/csv */
+                    className: 'btn btn-default btn-sm btn-flat',
+                    text: '<i class="fa fa-download"> CSV</i>',
+                    filename: 'Semesters',
+                    exportOptions: {
+                        // Avoid 6th column (actions):
+                        {{if .admin}}columns: ':not(:last-child)',{{end}}
+                        // Export original data (for example, truncated URLs will not be truncated):
+                        orthogonal: 'export'
+                    }
+                },
+                {
+                    extend: 'print', /* https://datatables.net/reference/button/print */
+                    className: 'btn btn-default btn-sm btn-flat',
+                    text: '<i class="fa fa-print"> Print</i>',
+                    exportOptions: {
+                        // Avoid 6th column (actions):
+                        {{if .admin}}columns: ':not(:last-child)'{{end}}
+                    },
+                    customize: function (win) {
+                        // Some styling:
+                        $(win.document.body).css('font-size', '10pt');
+                        $(win.document.body).find('table')
+                                .addClass('compact')
+                                .css('font-size', 'inherit');
+                    }
+                }
+            ]
+        });
+    
+        {{if .admin}}
+        function newTeacher() {
+            /******** NOTE: This function is called from DataTables! ********/
+    
+            // Define modal:
+            var modal = $('#new-modal');
+    
+            // Define editable (by user) modal form elements:
+            var input_name = modal.find('#name');
+            var input_surname = modal.find('#surname');
+            var input_email = modal.find('#email');
+    
+            /* If user typed anything, closed modal and reopened, the same
+             typed data will be shown. We need to clear it if any: */
+            input_name.val('');
+            input_surname.val('');
+            input_email.val('');
+    
+            // Display modal:
+            modal.modal({ backdrop: 'static' });
+    
+            // Focus on input box:
+            input_name.focus();
+        }
+    
+        /************* 'Edit' function *************/
+        table.on('click', '.edit-btn:not(.disabled)', function () {
+            // Define modal:
+            var modal = $('#edit-modal');
+    
+            // Define editable (by user) modal form elements:
+            var input_name = modal.find('#name');
+            var input_surname = modal.find('#surname');
+            var input_email = modal.find('#email');
+    
+            // Modal parts:
+            var modal_title = modal.find('.modal-title');
+            var modal_updated_by = modal.find('#updated_by');
+            var modal_updated_on = modal.find('#updated_on');
+            var modal_created_by = modal.find('#created_by');
+            var modal_created_on = modal.find('#created_on');
+    
+            // Prepare modal as "loading, please wait":
+            showModalContentLoading(modal);
+            // Display modal:
+            modal.modal({ backdrop: 'static' });
+            // ID of clicked item (row):
+            id = $(this).attr('item-id');
+            modal.parent().attr('action', '/teachers/' + id);
+            $.ajax({
+                method: "GET",
+                url: '/teachers/' + id,
+                dataType: 'json',
+                success: function (data) {
+                    input_name.val(data.name);
+                    input_surname.val(data.surname);
+                    input_email.val(data.email);
+        
+                    // Set modal title:
+                    modal_title.html('Editing "<b>' + data.name + ' ' + data.surname + '</b>".');
+        
+                    // Set 'updated by' and 'created by' values:
+                    modal_updated_by.html(data.updated_by);
+                    modal_updated_on.html(data.updated_on);
+                    modal_created_by.html(data.created_by);
+                    modal_created_on.html(data.created_on);
+        
+                    // Show expected modal:
+                    showModalContentLoaded(modal);
+        
+                    // Focus on title input box:
+                    input_name.focus();
+        
+                },
+                error: function (request, status, error) {
+                    ajaxErrorHandler(request, status, error);
+                    showModalContentFailed(modal);
+                }
+            });
+        });
+    
+        /************* 'Delete' function *************/
+        table.on('click', '.delete-btn:not(.disabled)', function () {
+            // Define modal:
+            var modal = $('#delete-modal');
+    
+            // Prepare modal as "loading, please wait":
+            showModalContentLoading(modal);
+            // Display modal:
+            modal.modal({ backdrop: 'static' });
+            // ID of clicked item (row):
+            id = $(this).attr('item-id');
+            modal.parent().attr('action', '/teachers/' + id);
+            // Fetch JSON formatted data from the server with below URL:
+            $.ajax({
+                method: "GET",
+                url: '/teachers/' + id,
+                dataType: 'json',
+                success: function (data) {
+                    // Set modal content:
+                    modal.find('.modal-body.loaded').html('Do you really want to delete teacher <b>' + data.name + ' ' + data.surname + '</b>?');
+        
+                    // Show expected modal:
+                    showModalContentLoaded(modal);
+                },
+                error: function (request, status, error) {
+                    ajaxErrorHandler(request, status, error);
+                    showModalContentFailed(modal);
+                }
+            });
+        });
+    
+        /******************** Form validator ********************/
+        validateForm($('#new-form'), "Teacher has been created!");
+        validateForm($('#edit-form'), "Teacher has been updated!");
+        function validateForm(_form, successMessage) {
+            _form.validate({
+                errorElement: "div",
+                errorClass: 'help-block',
+                highlight: function (element) {
+                    $(element).parents().eq(0).addClass("has-error");
+                },
+                unhighlight: function (element) {
+                    $(element).parents().eq(0).removeClass("has-error");
+                },
+                rules: {
+                    "name": {
+                        required: true,
+                        maxlength: 60
+                    },
+                    "surname": {
+                        required: true,
+                        maxlength: 60
+                    },
+                    "email": {
+                        required: true,
+                        maxlength: 254
+                    }
+                },
+                messages: {
+                    "name": {
+                        required: "You must enter teacher's name!",
+                        maxlength: "Name must be no longer than 60 characters!"
+                    },
+                    "surname": {
+                        required: "You must enter teacher's surname!",
+                        maxlength: "Surname must be no longer than 60 characters!"
+                    },
+                    "email": {
+                        required: "You must enter teacher's email!",
+                        maxlength: "Email must be no longer than 254 characters!"
+                    }
+                },
+                submitHandler: function (form) {
+                    submitAjaxForm(form, successMessage, function () {
+                        $('[href="#teachers"]:first').click(); // Refresh page
+                    });
+                    return false; // Prevent further events, since we use ajax.
+                }
+            });
+        }
+    
+        // Ajax submit delete form:
+        $("#delete-form").submit(function (e) {
+            submitAjaxForm(this, "Teacher has been deleted!", function () {
+                $('[href="#teachers"]:first').click(); // Refresh page
+            });
+            return false; // Prevent further events, since we use ajax.
+        });
+
+        {{end}}
+    
+    </script>

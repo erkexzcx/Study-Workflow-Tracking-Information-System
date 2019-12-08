@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{.title}}</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="/css/adminlte_skins/{{.theme_code}}.min.css">
+    <link rel="stylesheet" href="/css/toastr.min.css">
+    <link rel="stylesheet" href="/css/pace.min.css">
+    <link rel="stylesheet" href="/css/iCheck/square/blue.css">
+    <link rel="stylesheet" href="/css/datatables.min.css">
+    <link rel="stylesheet" href="/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet"href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+</head>
+
+<body class="hold-transition {{.theme_code}} sidebar-mini">
+    <div class="wrapper">
+
+        <!-- Main Header -->
+        <header class="main-header">
+
+            <!-- Logo -->
+            <a class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><i class="fa fa-university"></i></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><i class="fa fa-university"></i> {{.title}}</span>
+            </a>
+
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+
+                        <!-- Notifications Menu -->
+                        <li class="dropdown notifications-menu">
+                            <!-- Menu toggle button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Links</a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <ul class="menu" id="links_container" style="max-height: 85vh !important">
+                                        <!-- Links are loaded from "updateLinks()" function. -->
+                                        loading...
+                                    </ul>
+                                </li>
+                                <li class="footer"><a ajaxclickable href="#links">Full list</a></li>
+                            </ul>
+                        </li>
+                        <!-- User Account Menu -->
+                        <li class="dropdown user user-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <!-- The user image in the navbar-->
+                                <img src="{{.picture}}" class="user-image picture" onerror="this.onerror=null; this.src='/images/default_picture.png'" alt="">
+                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                <span class="hidden-xs">{{.name}} {{.surname}}</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- The user image in the menu -->
+                                <li class="user-header">
+                                    <img src="{{.picture}}" class="img-circle picture" onerror="this.onerror=null; this.src='/images/default_picture.png'" alt="">
+
+                                    <p>{{.name}} {{.surname}}</p>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a ajaxclickable href="#settings" class="btn btn-default btn-flat">Settings</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="/logout" class="btn btn-default btn-flat">Log out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+
+                <!-- Sidebar Menu -->
+                <ul class="sidebar-menu" data-widget="tree">
+                    <!-- -------------------------------------------------------- -->
+                    <li class="header">AVAILABLE CONTENT</li>
+                    <!-- -------------------------------------------------------- -->
+                    <li class="">
+                        <a ajaxclickable href="#progress_board">
+                            <i class="fa fa-thumb-tack"></i> <span>Progress board</span>
+                            <span class="pull-right-container" id="assignments_labels_container">
+                                <!-- Labels are loaded from "updateAssignmentsLabels()" function. -->
+                            </span>
+                        </a>
+                    </li>
+                    <!-- -------------------------------------------------------- -->
+                    <li class="">
+                        <a ajaxclickable href="#assignments">
+                            <i class="fa fa-check-square-o"></i> <span>Assignments</span>
+                        </a>
+                    </li>
+                    <!-- -------------------------------------------------------- -->
+                    <li class="">
+                        <a ajaxclickable href="#events">
+                            <i class="fa fa-calendar"></i> <span>Events</span>
+                            <span class="pull-right-container" id="events_labels_container">
+                                <!-- Labels are loaded from "updateEventsLabels()" function. -->
+                            </span>
+                        </a>
+                    </li>
+                    <!-- -------------------------------------------------------- -->
+                    <li class="">
+                        <a ajaxclickable href="#subjects">
+                            <i class="fa fa-address-book-o"></i> <span>Subjects</span>
+                        </a>
+                    </li>
+                    <!-- -------------------------------------------------------- -->
+                    <li class="">
+                        <a ajaxclickable href="#teachers">
+                            <i class="fa fa-graduation-cap"></i> <span>Teachers</span>
+                        </a>
+                    </li>
+                    <!-- -------------------------------------------------------- -->
+                    <li class="">
+                        <a ajaxclickable href="#tutors">
+                            <i class="fa fa-eur"></i> <span>Tutors</span>
+                        </a>
+                    </li>
+                    <!-- -------------------------------------------------------- -->
+                    <li class="">
+                        <a ajaxclickable href="#semesters">
+                            <i class="fa fa-hourglass-start"></i> <span>Semesters</span>
+                        </a>
+                    </li>
+                    <!-- -------------------------------------------------------- -->
+                    <li class="">
+                        <a ajaxclickable href="#users">
+                            <i class="fa fa-users"></i> <span>Users</span>
+                        </a>
+                    </li>
+                    <li style="display: none;" class="header activeSubjectsAdditionalElements">QUICK SUBJECTS</li>
+                    <li style="display: none;" class="activeSubjectsAdditionalElements" id="activeSubjectsContainer"></li>
+                </ul>
+                <!-- /.sidebar-menu -->
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <div id="load-here">
+                <!-- ### HTML CONTENT GOES HERE #### -->
+            </div>
+        </div>
+        <footer class="main-footer">
+            <strong>{{.title}} &copy; {{.currentyear}}</strong>. Maintained by <a target="_blank"
+                href='{{.authorurl}}'>{{.author}}</a>.
+        </footer>
+    </div>
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/adminlte.min.js"></script>
+    <script src="/js/toastr.min.js"></script>
+    <script src="/js/pace.min.js"></script>
+    <script src="/js/datatables.min.js"></script>
+    <script src="/js/bootstrap-datepicker.min.js"></script>
+    <script src="/js/packery.pkgd.min.js"></script>
+    <script src="/js/jquery.inputmask.js"></script>
+    <script src="/js/jquery.inputmask.extensions.js"></script>
+    <script src="/js/icheck.min.js"></script>
+    <script src="/js/jquery.validate.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <script src="/js/myscript.js"></script>
+
+</body>
+
+</html>
