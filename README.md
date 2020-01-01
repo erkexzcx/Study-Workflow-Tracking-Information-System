@@ -65,7 +65,7 @@ http://<address>:80
 
 # Issues
 
-Thanks to amazing Vilnius College study programme, I **officially** had only **1 month** (I have full-time job as well) to **fully complete** this project (including **fully completed** 50+ pages of report), so there was not much time to do a research on certain things.
+Thanks to amazing Vilnius College study programme, I **officially** had only **1 month** (I have full-time job as well) to **fully complete** this project (including **fully completed** minimum 57 pages of report), so there was not much time to do a research on certain things.
 
 These are the issues I am aware of and I just did not have time to deal with them:
 
