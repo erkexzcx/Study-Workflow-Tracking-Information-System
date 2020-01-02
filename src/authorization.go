@@ -17,7 +17,7 @@ func loginGet(c *gin.Context) {
 
 	// If user is already logged in - redirect to homepage:
 	if session.Get("id") != nil {
-		c.Redirect(http.StatusTemporaryRedirect, "/")
+		c.Redirect(http.StatusFound, "/")
 		return
 	}
 
@@ -131,7 +131,7 @@ func logout(c *gin.Context) {
 
 	// If user is already logged out:
 	if session.Get("id") == nil {
-		c.Redirect(http.StatusTemporaryRedirect, "/")
+		c.Redirect(http.StatusFound, "/")
 		return
 	}
 
@@ -143,5 +143,5 @@ func logout(c *gin.Context) {
 		return
 	}
 
-	c.Redirect(http.StatusTemporaryRedirect, "/")
+	c.Redirect(http.StatusFound, "/")
 }
