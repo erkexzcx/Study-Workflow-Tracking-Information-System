@@ -168,7 +168,11 @@ func defineRoutes(r *gin.Engine, authorized *gin.RouterGroup, adminAuthorized *g
 func authRequired(c *gin.Context) {
 	session := sessions.Default(c)
 
-	if session.Get("id") == nil {
+	if session.Get("id") == nil && c.FullPath() == "/app" {
+		// Redirect user to "/" instead of showing 403
+		c.Redirect(http.StatusFound, "/app")
+		return
+	} else if session.Get("id") == nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 		return
 	}
