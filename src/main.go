@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"crypto/rand"
 	"database/sql"
 	"html/template"
 	"log"
@@ -52,8 +53,10 @@ func main() {
 	r := gin.Default()
 
 	// Use cookies (sessions):
-	store := cookie.NewStore([]byte("secret"))
-	r.Use(sessions.Sessions("session", store))
+	token := make([]byte, 64)
+	rand.Read(token)
+	store := cookie.NewStore(token)
+	r.Use(sessions.Sessions("swtis", store))
 
 	r.SetFuncMap(template.FuncMap{
 		"negative": negative,
