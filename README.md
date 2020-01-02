@@ -42,7 +42,7 @@ go build -o swtis src/*.go
 2. "Install" by copying files to OS locations:
 ```
 mkdir -p /opt/swtis
-cp -r {static,templates,swtis.conf} /opt/swtis/
+cp -r {static,templates,swtis.conf,swtis} /opt/swtis/
 cp swtis.service /etc/systemd/system/
 ```
 3. Set-up database scheme.
