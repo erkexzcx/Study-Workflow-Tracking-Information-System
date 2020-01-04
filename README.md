@@ -65,7 +65,7 @@ http://<address>:80
 
 # Issues
 
-Thanks to amazing Vilnius College study programme, I **officially** had only **1 month** (I have full-time job as well) to **fully complete** this project (including **fully completed** (minimum 57 pages of) report), so there was not much time to do a research on certain things.
+Thanks to amazing Vilnius College study programme, I **officially** had only **1 month** (I have full-time job as well) to **fully complete** this project (including **fully completed** (60+ pages) report), so there was not much time to do a research on certain things.
 
 These are the issues I am aware of and I just did not have time to deal with them:
 
@@ -79,6 +79,7 @@ These are the issues I am aware of and I just did not have time to deal with the
 7. There are no soft-deletes. ORM could easily solve this for me.
 8. No DB backups implementation.
 9. (Error) logging is also very poor.
+10. Project structure is exactly opposite of [what's recommended](https://github.com/golang-standards/project-layout).
 
 *Client-side*:
 1. Based on AdminLTE2, but AdminLTE3 is already out at the time of writting.
