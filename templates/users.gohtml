@@ -480,6 +480,9 @@
             url: "/users/" + id,
             dataType: 'json',
             success: function (data) {
+                // Set modal title:
+                modal.find('.modal-title').html('User delete confirmation');
+
                 // Set modal content:
                 modal.find('.modal-body.loaded').html('Do you really want to delete <b>' + data.name + ' ' + data.surname + '</b>?');
 

@@ -601,6 +601,9 @@
                 url: '/assignments/' + id,
                 dataType: 'json',
                 success: function (data) {
+                    // Set modal title:
+                    modal.find('.modal-title').html('Assignment delete confirmation');
+
                     // Set modal content:
                     modal.find('.modal-body.loaded').html('Do you really want to delete assignment <b>' + data.title + '</b>?');
         

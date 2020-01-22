@@ -447,6 +447,9 @@
                 url: '/subjects/' + id,
                 dataType: 'json',
                 success: function (data) {
+                    // Set modal title:
+                    modal.find('.modal-title').html('Subject delete confirmation');
+
                     // Set modal content:
                     modal.find('.modal-body.loaded').html('Do you really want to delete subject <b>' + data.title + '</b>?');
         

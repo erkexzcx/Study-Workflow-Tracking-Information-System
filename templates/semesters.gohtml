@@ -405,6 +405,9 @@
                 url: '/semesters/' + id,
                 dataType: 'json',
                 success: function (data) {
+                    // Set modal title:
+                    modal.find('.modal-title').html('Semester delete confirmation');
+
                     // Set modal content:
                     modal.find('.modal-body.loaded').html('Do you really want to delete semester <b>' + data.title + '</b>?');
         

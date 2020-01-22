@@ -437,6 +437,9 @@
                 url: '/events/' + id,
                 dataType: 'json',
                 success: function (data) {
+                    // Set modal title:
+                    modal.find('.modal-title').html('Event delete confirmation');
+
                     // Set modal content:
                     modal.find('.modal-body.loaded').html('Do you really want to delete event <b>' + data.title + '</b>?');
         
